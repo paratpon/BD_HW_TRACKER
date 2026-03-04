@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bodindecha Digital Homework and Assignment Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --bg:       #060f1e;
+  --surface:  #0b1a35;
+  --surface2: #102040;
+  --surface3: #162b52;
+  --border:   #1e3a6e;
+  --border2:  #254880;
+  --text:     #ddeeff;
+  --text-muted: #6a90c0;
+  --text-dim: #3a5880;
+  --accent:   #3a8fe8;
+  --accent2:  #5aaaf5;
+  --accent-soft: #0d2545;
+  --green:    #2ecf80;
+  --green-soft: #072818;
+  --yellow:   #f0c040;
+  --yellow-soft: #251c04;
+  --red:      #f06070;
+  --red-soft: #25070c;
+  --purple:   #a07ae0;
+  --purple-soft: #150e2a;
+  --shadow:   0 4px 20px rgba(0,10,30,.5);
+  --shadow-lg:0 12px 50px rgba(0,10,30,.7);
+  --r: 12px;
+  --r-sm: 8px;
+}
+
+body {
+  font-family:'Sarabun',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+
+/* ── LANG TOGGLE ── */
+.lang-toggle{position:fixed;top:14px;right:16px;z-index:9999;display:flex;align-items:center;
+  background:var(--surface2);border:1px solid var(--border);border-radius:30px;overflow:hidden;box-shadow:var(--shadow);}
+.lang-btn{padding:5px 14px;font-family:'Sarabun',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all .15s;letter-spacing:.3px;}
+.lang-btn.active{background:var(--accent);color:#fff;}
+.lang-btn:hover:not(.active){background:var(--surface3);color:var(--text);}
+
+/* ══════════════════════════════════════
+   AUTH SCREENS
+══════════════════════════════════════ */
+.auth-screen {
+  display:none;
+  min-height:100vh;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 20%, #0d2860 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 80%, #051838 0%, transparent 60%),
+    var(--bg);
+  animation:fadeIn .3s ease;
+}
+.auth-screen.active{display:flex}
+
+.auth-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  width:100%;
+  max-width:460px;
+  box-shadow:var(--shadow-lg);
+  overflow:hidden;
+}
+
+.auth-header {
+  background:linear-gradient(135deg,#0d2860,#0a1f4a);
+  padding:36px 36px 28px;
+  border-bottom:1px solid var(--border);
+  text-align:center;
+}
+.auth-school-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(58,143,232,.15);
+  border:1px solid rgba(58,143,232,.3);
+  border-radius:30px;
+  padding:5px 14px;
+  font-size:11px;
+  font-weight:600;
+  color:var(--accent2);
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  margin-bottom:16px;
+}
+.auth-logo {
+  font-family:'Playfair Display',serif;
+  font-size:26px;
+  color:var(--text);
+  line-height:1.2;
+  margin-bottom:6px;
+}
+.auth-logo span{color:var(--accent2)}
+.auth-subtitle{font-size:12px;color:var(--text-muted)}
+
+.auth-body{padding:28px 36px 32px}
+.auth-role-toggle {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:24px;
+}
+.role-btn {
+  padding:12px;
+  border-radius:var(--r-sm);
+  border:1.5px solid var(--border);
+  background:var(--surface2);
+  color:var(--text-muted);
+  font-family:'Sarabun',sans-serif;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+  text-align:center;
+}
+.role-btn:hover{border-color:var(--accent);color:var(--text)}
+.role-btn.active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent2)}
+.role-btn .role-icon{font-size:20px;display:block;margin-bottom:4px}
+
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:6px}
+.form-input,.form-select{
+  width:100%;padding:11px 14px;
+  background:var(--surface2);
+  border:1.5px solid var(--border);
+  border-radius:var(--r-sm);
+  font-family:'Sarabun',sans-serif;
+  font-size:14px;color:var(--text);
+  outline:none;transition:border-color .15s;
+  color-scheme:dark;
+}
+.form-input:focus,.form-select:focus{border-color:var(--accent);background:var(--surface3)}
+.form-input::placeholder{color:var(--text-dim)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 20px;border-radius:var(--r-sm);
+  font-family:'Sarabun',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .15s;border:none;white-space:nowrap;
+}
+.btn-primary{background:var(--accent);color:#fff;width:100%;padding:13px}
+.btn-primary:hover{background:#2a7fd8;transform:translateY(-1px);box-shadow:0 4px 16px rgba(58,143,232,.4)}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);border-color:var(--border2)}
+.btn-sm{padding:7px 14px;font-size:12px}
+.btn-danger{background:var(--red-soft);color:var(--red);border:1px solid var(--red)}
+.btn-danger:hover{background:var(--red);color:#fff}
+.btn-success{background:var(--green-soft);color:var(--green);border:1px solid var(--green)}
+.btn-success:hover{background:var(--green);color:#fff}
+
+.auth-switch{text-align:center;margin-top:20px;font-size:13px;color:var(--text-muted)}
+.auth-switch a{color:var(--accent2);cursor:pointer;font-weight:600;text-decoration:none}
+.auth-switch a:hover{text-decoration:underline}
+
+.auth-error{
+  background:var(--red-soft);border:1px solid var(--red);
+  color:var(--red);border-radius:var(--r-sm);
+  padding:10px 14px;font-size:13px;margin-bottom:16px;display:none;
+}
+.auth-error.show{display:block}
+
+/* ══════════════════════════════════════
+   MAIN APP LAYOUT
+══════════════════════════════════════ */
+.app-screen{display:none;min-height:100vh;flex-direction:column}
+.app-screen.active{display:flex}
+
+/* TOP NAV */
+.topnav {
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:0 28px;
+  display:flex;align-items:center;gap:0;
+  height:58px;
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(10px);
+}
+.nav-brand{
+  font-family:'Playfair Display',serif;
+  font-size:16px;color:var(--text);
+  margin-right:24px;white-space:nowrap;
+  flex-shrink:0;
+}
+.nav-brand span{color:var(--accent2)}
+.nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
+.nav-tab{
+  padding:0 18px;height:58px;display:flex;align-items:center;
+  font-size:13px;font-weight:600;color:var(--text-muted);
+  cursor:pointer;border-bottom:3px solid transparent;
+  transition:all .15s;white-space:nowrap;
+}
+.nav-tab:hover{color:var(--text);background:var(--surface2)}
+.nav-tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+
+.nav-right{display:flex;align-items:center;gap:12px;margin-left:auto;flex-shrink:0}
+.user-chip{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 12px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:30px;cursor:pointer;
+  transition:all .15s;
+}
+.user-chip:hover{border-color:var(--border2)}
+.user-avatar{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.avatar-teacher{background:linear-gradient(135deg,#2a7fd8,#1a5fb0)}
+.avatar-student{background:linear-gradient(135deg,#2ecf80,#1a8f58)}
+.user-chip-name{font-size:13px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-chip-role{font-size:10px;color:var(--text-muted);line-height:1}
+
+/* CONTENT AREA */
+.app-content{flex:1;padding:28px;max-width:1200px;margin:0 auto;width:100%}
+
+/* ══════════════════════════════════════
+   PANELS & CARDS
+══════════════════════════════════════ */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.panel-header{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.panel-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.panel-body{padding:20px}
+
+/* ══════════════════════════════════════
+   CLASS SELECTOR
+══════════════════════════════════════ */
+.class-browser{}
+.level-section{margin-bottom:24px}
+.level-title{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--text-muted);
+  padding:0 0 10px;border-bottom:1px solid var(--border);
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.classes-grid{display:flex;flex-wrap:wrap;gap:8px}
+.class-chip{
+  padding:8px 16px;border-radius:var(--r-sm);
+  border:1.5px solid var(--border);background:var(--surface2);
+  font-size:13px;font-weight:600;color:var(--text-muted);
+  cursor:pointer;transition:all .15s;
+}
+.class-chip:hover{border-color:var(--accent);color:var(--accent2);background:var(--accent-soft)}
+.class-chip.active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent2)}
+.class-chip.has-assignments{border-color:var(--border2);color:var(--text)}
+
+/* ══════════════════════════════════════
+   ASSIGNMENT CARDS
+══════════════════════════════════════ */
+.assignments-area{flex:1}
+.assignments-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:18px;flex-wrap:wrap;gap:12px;
+}
+.assignments-title{font-family:'Playfair Display',serif;font-size:22px}
+.assignments-title span{color:var(--text-muted);font-size:14px;font-family:'Sarabun',sans-serif;font-weight:400;margin-left:8px}
+
+.a-list{display:flex;flex-direction:column;gap:10px}
+
+.a-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px 20px;
+  display:flex;gap:16px;align-items:flex-start;
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.a-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:4px;border-radius:4px 0 0 4px;
+}
+.a-card.p-high::before{background:var(--red)}
+.a-card.p-medium::before{background:var(--yellow)}
+.a-card.p-low::before{background:var(--green)}
+.a-card:hover{box-shadow:var(--shadow);border-color:var(--border2)}
+.a-card.is-done{opacity:.55}
+.a-card.is-done .a-title{text-decoration:line-through}
+
+.a-check{
+  width:24px;height:24px;border-radius:50%;
+  border:2px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;cursor:pointer;
+  transition:all .2s;font-size:12px;color:transparent;
+}
+.a-check:hover{border-color:var(--green);background:var(--green-soft)}
+.a-check.checked{border-color:var(--green);background:var(--green);color:#fff}
+.a-check.readonly{cursor:default;pointer-events:none}
+
+.a-body{flex:1;min-width:0}
+.a-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.a-desc{font-size:13px;color:var(--text-muted);margin-bottom:8px;line-height:1.5}
+.a-tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;
+}
+.tag-subject{background:rgba(58,143,232,.15);color:var(--accent2)}
+.tag-type{background:var(--purple-soft);color:var(--purple)}
+.tag-due{background:var(--surface2);color:var(--text-muted)}
+.tag-points{background:var(--yellow-soft);color:var(--yellow)}
+.tag-overdue{background:var(--red-soft);color:var(--red)}
+.tag-urgent{background:rgba(240,96,112,.1);color:var(--red)}
+.tag-done{background:var(--green-soft);color:var(--green)}
+
+.a-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
+.priority-badge{
+  font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;padding:3px 9px;border-radius:20px;
+}
+.pb-high{background:var(--red-soft);color:var(--red)}
+.pb-medium{background:var(--yellow-soft);color:var(--yellow)}
+.pb-low{background:var(--green-soft);color:var(--green)}
+.a-actions{display:flex;gap:6px}
+
+/* ══════════════════════════════════════
+   STATS BAR
+══════════════════════════════════════ */
+.stats-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin-bottom:24px;
+}
+.stat-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px 18px;transition:box-shadow .2s;
+}
+.stat-box:hover{box-shadow:var(--shadow)}
+.stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:6px}
+.stat-val{font-family:'Playfair Display',serif;font-size:32px;line-height:1}
+.sv-accent{color:var(--accent2)}
+.sv-green{color:var(--green)}
+.sv-red{color:var(--red)}
+.sv-yellow{color:var(--yellow)}
+.stat-sub{font-size:11px;color:var(--text-dim);margin-top:3px}
+
+/* ══════════════════════════════════════
+   MODAL
+══════════════════════════════════════ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,8,20,.75);z-index:200;
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:18px;width:100%;max-width:560px;
+  max-height:88vh;overflow-y:auto;
+  box-shadow:var(--shadow-lg);animation:slideUp .25s cubic-bezier(.4,0,.2,1);
+}
+.modal-header{
+  padding:22px 26px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;background:var(--surface);z-index:1;
+}
+.modal-title{font-family:'Playfair Display',serif;font-size:20px}
+.modal-close{
+  width:30px;height:30px;border-radius:50%;
+  border:1px solid var(--border);background:var(--surface2);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--text-muted);transition:all .15s;
+}
+.modal-close:hover{background:var(--surface3);color:var(--text)}
+.modal-body{padding:22px 26px}
+.modal-footer{padding:16px 26px 22px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--border)}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{
+  background:var(--surface3);border:1px solid var(--border2);
+  color:var(--text);padding:12px 18px;border-radius:var(--r-sm);
+  font-size:13px;font-weight:600;box-shadow:var(--shadow-lg);
+  animation:toastIn .3s cubic-bezier(.4,0,.2,1);
+  display:flex;align-items:center;gap:10px;max-width:300px;
+}
+
+/* ══════════════════════════════════════
+   EMPTY / LOADING STATES
+══════════════════════════════════════ */
+.empty-state{
+  text-align:center;padding:60px 20px;color:var(--text-muted);
+}
+.empty-state .ei{font-size:44px;margin-bottom:14px}
+.empty-state h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--text);margin-bottom:6px}
+.empty-state p{font-size:13px}
+
+/* ══════════════════════════════════════
+   TEACHER DASHBOARD
+══════════════════════════════════════ */
+.teacher-layout{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start}
+
+/* ══════════════════════════════════════
+   STUDENT DASHBOARD
+══════════════════════════════════════ */
+.student-layout{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
+
+/* PROGRESS BAR */
+.prog-bar{height:6px;background:var(--surface3);border-radius:10px;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;border-radius:10px;background:var(--accent);transition:width .6s cubic-bezier(.4,0,.2,1)}
+.prog-fill.green{background:var(--green)}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.search-wrap{flex:1;min-width:180px;position:relative}
+.search-wrap input{
+  width:100%;padding:9px 14px 9px 36px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--r-sm);font-family:'Sarabun',sans-serif;
+  font-size:13px;color:var(--text);outline:none;transition:border-color .15s;
+}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap input::placeholder{color:var(--text-dim)}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:13px;pointer-events:none}
+.fchip{
+  padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;
+  cursor:pointer;border:1.5px solid var(--border);background:var(--surface2);
+  color:var(--text-muted);transition:all .15s;white-space:nowrap;
+}
+.fchip:hover,.fchip.active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent2)}
+
+/* ══════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════ */
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes toastIn{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media(max-width:900px){
+  .teacher-layout,.student-layout{grid-template-columns:1fr}
+  .stats-strip{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .app-content{padding:16px}
+  .topnav{padding:0 16px}
+  .nav-brand{font-size:13px}
+  .stats-strip{grid-template-columns:1fr 1fr}
+}
+
+/* ══════════════════════════════════════
+   DIVIDER
+══════════════════════════════════════ */
+.divider{height:1px;background:var(--border);margin:16px 0}
+
+/* section header used in teacher view */
+.section-hd{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--text-muted);margin-bottom:10px;
+  display:flex;align-items:center;gap:6px;
+}
+.section-hd::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* inline edit field */
+.inline-input{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;padding:4px 8px;color:var(--text);
+  font-family:'Sarabun',sans-serif;font-size:13px;
+  outline:none;width:100%;
+}
+.inline-input:focus{border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<!-- LANGUAGE TOGGLE -->
+<div class="lang-toggle">
+  <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" id="lang-th" onclick="setLang('th')">ไทย</button>
+</div>
+
+<!-- ══════════════════════════════════
+     SIGN IN SCREEN
+══════════════════════════════════════ -->
+<div class="auth-screen active" id="screen-signin">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-school-badge" id="signin-school-badge">🏫 Bodindecha (Sing Singhaseni) School</div>
+      <div class="auth-logo" id="signin-logo">Bodindecha<br><span>Homework Tracker</span></div>
+      <div class="auth-subtitle" id="signin-subtitle">Digital Homework &amp; Assignment Management System</div>
+    </div>
+    <div class="auth-body">
+      <div class="auth-role-toggle">
+        <div class="role-btn active" id="signin-role-teacher" onclick="setSigninRole('teacher')">
+          <span class="role-icon">👨‍🏫</span><span id="signin-role-teacher-label">Teacher</span>
+        </div>
+        <div class="role-btn" id="signin-role-student" onclick="setSigninRole('student')">
+          <span class="role-icon">🎒</span><span id="signin-role-student-label">Student</span>
+        </div>
+      </div>
+      <div class="auth-error" id="signin-error"></div>
+      <div class="form-group">
+        <label class="form-label" id="signin-username-label">Username</label>
+        <input class="form-input" id="signin-username" type="text" placeholder="Enter your username" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="signin-password-label">Password</label>
+        <input class="form-input" id="signin-password" type="password" placeholder="Enter your password" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary" id="signin-btn" onclick="doSignIn()">Sign In</button>
+      <div class="auth-switch"><span id="signin-switch-text">Don't have an account?</span> <a onclick="gotoSignup()" id="signin-switch-link">Create one →</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SIGN UP SCREEN
+══════════════════════════════════════ -->
+<div class="auth-screen" id="screen-signup">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-school-badge" id="signup-school-badge">🏫 Bodindecha (Sing Singhaseni) School</div>
+      <div class="auth-logo" id="signup-logo">Create<br><span>Account</span></div>
+      <div class="auth-subtitle" id="signup-subtitle">Register for the Bodindecha Homework Tracker</div>
+    </div>
+    <div class="auth-body">
+      <div class="auth-role-toggle">
+        <div class="role-btn active" id="signup-role-teacher" onclick="setSignupRole('teacher')">
+          <span class="role-icon">👨‍🏫</span><span id="signup-role-teacher-label">Teacher</span>
+        </div>
+        <div class="role-btn" id="signup-role-student" onclick="setSignupRole('student')">
+          <span class="role-icon">🎒</span><span id="signup-role-student-label">Student</span>
+        </div>
+      </div>
+      <div class="auth-error" id="signup-error"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" id="signup-fn-label">First Name</label>
+          <input class="form-input" id="signup-firstname" type="text" placeholder="First name">
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="signup-ln-label">Last Name</label>
+          <input class="form-input" id="signup-lastname" type="text" placeholder="Last name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="signup-user-label">Username</label>
+        <input class="form-input" id="signup-username" type="text" placeholder="Choose a username">
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="signup-pass-label">Password</label>
+        <input class="form-input" id="signup-password" type="password" placeholder="Create a password (min 4 chars)">
+      </div>
+
+      <!-- Student-only class picker -->
+      <div id="signup-class-section" style="display:none">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" id="signup-level-label">Level (ชั้น)</label>
+            <select class="form-select" id="signup-level" onchange="populateSignupClass()">
+              <option value="">Select level...</option>
+              <option>M.1</option><option>M.2</option><option>M.3</option>
+              <option>M.4</option><option>M.5</option><option>M.6</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" id="signup-class-label">Class (ห้อง)</label>
+            <select class="form-select" id="signup-class">
+              <option value="">Select level first</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="signup-sid-label">Student ID</label>
+          <input class="form-input" id="signup-studentid" type="text" placeholder="e.g. 12345">
+        </div>
+      </div>
+
+      <!-- Teacher-only subject field -->
+      <div id="signup-teacher-section">
+        <div class="form-group">
+          <label class="form-label" id="signup-subject-label">Subject / Department</label>
+          <input class="form-input" id="signup-subject" type="text" placeholder="e.g. Mathematics, Thai Language...">
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="signup-btn" onclick="doSignUp()">Create Account</button>
+      <div class="auth-switch"><span id="signup-switch-text">Already have an account?</span> <a onclick="gotoSignin()" id="signup-switch-link">Sign in →</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TEACHER APP
+══════════════════════════════════════ -->
+<div class="app-screen" id="screen-teacher">
+  <nav class="topnav">
+    <div class="nav-brand" id="teacher-nav-brand">Bodindecha <span>Tracker</span></div>
+    <div class="nav-tabs">
+      <div class="nav-tab active" id="teacher-tab-dashboard" onclick="teacherTab('dashboard',this)">📊 Dashboard</div>
+      <div class="nav-tab" id="teacher-tab-assignments" onclick="teacherTab('assignments',this)">📋 Assignments</div>
+      <div class="nav-tab" id="teacher-tab-classes" onclick="teacherTab('classes',this)">🏫 Classes</div>
+    </div>
+    <div class="nav-right">
+      <div class="user-chip" id="teacher-chip">
+        <div class="user-avatar avatar-teacher" id="teacher-avatar-nav">T</div>
+        <div><div class="user-chip-name" id="teacher-name-nav">Teacher</div><div class="user-chip-role" id="teacher-role-label">Teacher</div></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="teacher-signout-btn" onclick="signOut()">Sign Out</button>
+    </div>
+  </nav>
+  <div class="app-content" id="teacher-content">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     STUDENT APP
+══════════════════════════════════════ -->
+<div class="app-screen" id="screen-student">
+  <nav class="topnav">
+    <div class="nav-brand" id="student-nav-brand">Bodindecha <span>Tracker</span></div>
+    <div class="nav-tabs">
+      <div class="nav-tab active" id="student-tab-my" onclick="studentTab('my',this)">📚 My Assignments</div>
+      <div class="nav-tab" id="student-tab-done" onclick="studentTab('done',this)">✅ Completed</div>
+    </div>
+    <div class="nav-right">
+      <div class="user-chip">
+        <div class="user-avatar avatar-student" id="student-avatar-nav">S</div>
+        <div><div class="user-chip-name" id="student-name-nav">Student</div><div class="user-chip-role" id="student-class-nav">Class</div></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="student-signout-btn" onclick="signOut()">Sign Out</button>
+    </div>
+  </nav>
+  <div class="app-content" id="student-content">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     ADD / EDIT ASSIGNMENT MODAL
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-assignment">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-a-title">Add Assignment</div>
+      <button class="modal-close" onclick="closeAssignmentModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" id="modal-title-label">Title *</label>
+        <input class="form-input" id="fa-title" placeholder="Assignment title...">
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="modal-desc-label">Description</label>
+        <textarea class="form-input" id="fa-desc" rows="3" placeholder="Instructions, details..." style="resize:vertical"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" id="modal-subj-label">Subject</label>
+          <input class="form-input" id="fa-subject" placeholder="e.g. Mathematics">
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="modal-type-label">Type</label>
+          <select class="form-select" id="fa-type">
+            <option>Homework</option><option>Assignment</option><option>Project</option>
+            <option>Essay</option><option>Lab Report</option><option>Quiz</option>
+            <option>Exam</option><option>Presentation</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" id="modal-due-label">Due Date *</label>
+          <input class="form-input" id="fa-due" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="modal-priority-label">Priority</label>
+          <select class="form-select" id="fa-priority">
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" id="modal-points-label">Points</label>
+          <input class="form-input" id="fa-points" type="number" min="0" placeholder="e.g. 100">
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="modal-time-label">Est. Time (min)</label>
+          <input class="form-input" id="fa-time" type="number" min="0" placeholder="e.g. 60">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="modal-classes-label">Assign to Classes</label>
+        <div id="modal-class-picker" style="display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow-y:auto;padding:4px 0"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modal-cancel-btn" onclick="closeAssignmentModal()">Cancel</button>
+      <button class="btn btn-primary" id="modal-save-btn" onclick="saveAssignment()">Save Assignment</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toast-wrap"></div>
+
+<script>
+
+// ================================================================
+// TRANSLATION SYSTEM
+// ================================================================
+let lang = localStorage.getItem('bdt_lang') || 'en';
+
+const T = {
+  en: {
+    schoolBadge:'🏫 Bodindecha (Sing Singhaseni) School',
+    trackerName:'Bodindecha<br><span>Homework Tracker</span>',
+    trackerSubtitle:'Digital Homework & Assignment Management System',
+    navBrand:'Bodindecha <span>Tracker</span>',
+    teacher:'Teacher', student:'Student',
+    username:'Username', password:'Password',
+    usernamePh:'Enter your username', passwordPh:'Enter your password',
+    signinBtn:'Sign In', noAccount:"Don't have an account?", createOne:'Create one →',
+    signupTitle:'Create<br><span>Account</span>',
+    signupSubtitle:'Register for the Bodindecha Homework Tracker',
+    firstName:'First Name', firstNamePh:'First name',
+    lastName:'Last Name', lastNamePh:'Last name',
+    chooseUser:'Choose a username', createPass:'Create a password (min 4 chars)',
+    level:'Level (ชั้น)', selectLevel:'Select level...',
+    classRoom:'Class (ห้อง)', selectLevelFirst:'Select level first',
+    studentId:'Student ID', studentIdPh:'e.g. 12345',
+    subjectDept:'Subject / Department', subjectPh:'e.g. Mathematics, Thai Language...',
+    createAccBtn:'Create Account',
+    alreadyHave:'Already have an account?', signInLink:'Sign in →',
+    dashboard:'📊 Dashboard', assignments:'📋 Assignments', classes:'🏫 Classes',
+    myAssignments:'📚 My Assignments', completed:'✅ Completed',
+    signOut:'Sign Out', roleTeacher:'Teacher', roleStudent:'Student',
+    welcomeBack:'Welcome back', subjectLabel:'Subject',
+    overviewLabel:"${t('overviewLabel')}",
+    totalAssign:'Total Assignments', createdByYou:'created by you',
+    activeDueSoon:'Active / Due Soon', upcomingDeadlines:'upcoming deadlines',
+    overdue:t('overdueCount'), pastDueDate:'past due date',
+    classesAssigned:'Classes Assigned', acrossAll:'across all assignments',
+    recentlyAdded:t('recentlyAdded'), viewAll:'View All',
+    noAssignmentsYet:t('noAssignmentsYet'), createFirst:t('createFirst'),
+    noSubject:t('noSubject'), due:'Due',
+    classCount:(n)=>`${t('classesN',n)}`,
+    assignByLevel:'🏫 Assignment by Level', assignmentsLabel:'assignments',
+    allAssignments:t('allAssignments'), newAssignment:t('newAssignment'),
+    searchPh:'Search assignments...', allLevels:t('allLevels'),
+    noAssignmentsFound:t('noAssignmentsFound'), createOneAbove:t('createOneAbove'),
+    classesTitle:t('classesTitle'), browseByClass:t('browseByClass'),
+    selectAClass:t('selectAClass'), selectAClassPrompt:t('selectAClassPrompt'),
+    selectClassLeft:t('selectClassLeft'),
+    addAssignment:t('addAssignment'),
+    noAssignmentsClass:t('noAssignmentsClass'), noAssignmentsClassSub:t('noAssignmentsClassSub'),
+    pending:t('pending'), toComplete:t('toComplete'), overdueCount:'Overdue', finished:t('finished'),
+    progressLabel:t('progressLabel'), pendingAssign:t('pendingAssign'),
+    allDoneTitle:t('allDoneTitle'), allDoneSub:t('allDoneSub'),
+    completedTitle:t('completedTitle'), total:t('total'),
+    nothingHere:t('nothingHere'), nothingHereSub:t('nothingHereSub'),
+    editBtn:t('editBtn'), deleteBtn:'🗑', markComplete:'Mark complete', markIncomplete:'Mark incomplete',
+    daysOverdue:(n)=>`⚠️ ${n}d overdue`,
+    dueToday:t('dueToday'), dueTomorrow:t('dueTomorrow'),
+    daysLeft:(n)=>`🟡 ${n} days left`,
+    addAssignmentTitle:'New Assignment', editAssignmentTitle:'Edit Assignment',
+    titleField:'Title *', titlePh:'Assignment title...',
+    description:'Description', descPh:'Instructions, details...',
+    subject:'Subject', subjectFieldPh:'e.g. Mathematics',
+    type:'Type', dueDate:'Due Date *', priority:'Priority',
+    points:'Points', pointsPh:'e.g. 100',
+    estTime:'Est. Time (min)', estTimePh:'e.g. 60',
+    assignToClasses:'Assign to Classes', cancel:'Cancel', saveAssignment:'Save Assignment',
+    selectAll:'Select all',
+    pHigh:'High', pMedium:'Medium', pLow:'Low',
+    types:['Homework','Assignment','Project','Essay','Lab Report','Quiz','Exam','Presentation'],
+    fillRequired:'Please fill in all fields.',
+    wrongCredentials:'Incorrect username or password.',
+    fillAllRequired:'Please fill in all required fields.',
+    passwordShort:'Password must be at least 4 characters.',
+    usernameTaken:'Username already taken.', selectClass:'Please select your class.',
+    accountCreated:'✅ Account created! Please sign in.',
+    fillTitleDue:'⚠️ Please fill in title and due date.',
+    selectOneClass:'⚠️ Please select at least one class.',
+    assignmentUpdated:'✏️ Assignment updated!', assignmentAdded:'✅ Assignment added!',
+    confirmDelete:'Delete this assignment? Students will no longer see it.',
+    assignmentDeleted:'🗑️ Assignment deleted.',
+    markedDone:'✅ Marked as done!', markedUndone:'↩️ Marked incomplete',
+    classesN:(n)=>`${n} class${n!==1?'es':''}`,
+    nAssignments:(n)=>`${n} assignment${n!==1?'s':''} assigned`,
+  },
+  th: {
+    schoolBadge:'🏫 โรงเรียนบดินทรเดชา (สิงห์ สิงหเสนี)',
+    trackerName:'บดินทรเดชา<br><span>ระบบติดตามการบ้าน</span>',
+    trackerSubtitle:'ระบบจัดการการบ้านและงานมอบหมายดิจิทัล',
+    navBrand:'บดินทรเดชา <span>Tracker</span>',
+    teacher:'ครู', student:'นักเรียน',
+    username:'ชื่อผู้ใช้', password:'รหัสผ่าน',
+    usernamePh:'กรอกชื่อผู้ใช้', passwordPh:'กรอกรหัสผ่าน',
+    signinBtn:'เข้าสู่ระบบ', noAccount:'ยังไม่มีบัญชี?', createOne:'สร้างบัญชี →',
+    signupTitle:'สร้าง<br><span>บัญชีใหม่</span>',
+    signupSubtitle:'ลงทะเบียนใช้งานระบบติดตามการบ้านบดินทรเดชา',
+    firstName:'ชื่อ', firstNamePh:'ชื่อ',
+    lastName:'นามสกุล', lastNamePh:'นามสกุล',
+    chooseUser:'ตั้งชื่อผู้ใช้', createPass:'ตั้งรหัสผ่าน (อย่างน้อย 4 ตัวอักษร)',
+    level:'ชั้นเรียน', selectLevel:'เลือกชั้นเรียน...',
+    classRoom:'ห้อง', selectLevelFirst:'เลือกชั้นก่อน',
+    studentId:'รหัสนักเรียน', studentIdPh:'เช่น 12345',
+    subjectDept:'วิชา / กลุ่มสาระ', subjectPh:'เช่น คณิตศาสตร์, ภาษาไทย...',
+    createAccBtn:'สร้างบัญชี',
+    alreadyHave:'มีบัญชีแล้ว?', signInLink:'เข้าสู่ระบบ →',
+    dashboard:'📊 ภาพรวม', assignments:'📋 งานทั้งหมด', classes:'🏫 ห้องเรียน',
+    myAssignments:'📚 งานของฉัน', completed:'✅ ที่ทำเสร็จแล้ว',
+    signOut:'ออกจากระบบ', roleTeacher:'ครู', roleStudent:'นักเรียน',
+    welcomeBack:'ยินดีต้อนรับ', subjectLabel:'วิชา',
+    overviewLabel:'นี่คือภาพรวมงานมอบหมายของคุณ',
+    totalAssign:'งานทั้งหมด', createdByYou:'ที่คุณสร้าง',
+    activeDueSoon:'งานที่ใกล้ครบกำหนด', upcomingDeadlines:'กำหนดส่งที่กำลังมาถึง',
+    overdue:'เลยกำหนดแล้ว', pastDueDate:'เกินวันกำหนด',
+    classesAssigned:'ห้องที่มอบหมาย', acrossAll:'ในงานทั้งหมด',
+    recentlyAdded:'📅 เพิ่มล่าสุด', viewAll:'ดูทั้งหมด',
+    noAssignmentsYet:'ยังไม่มีงานมอบหมาย', createFirst:'สร้างงานแรกของคุณ',
+    noSubject:'ไม่ระบุวิชา', due:'กำหนดส่ง',
+    classCount:(n)=>`${n} ห้อง`,
+    assignByLevel:'🏫 งานแยกตามชั้น', assignmentsLabel:'งาน',
+    allAssignments:'งานมอบหมายทั้งหมด', newAssignment:'＋ เพิ่มงานใหม่',
+    searchPh:'ค้นหางาน...', allLevels:'ทุกชั้น',
+    noAssignmentsFound:'ไม่พบงานมอบหมาย', createOneAbove:'สร้างงานใหม่ด้วยปุ่มด้านบน',
+    classesTitle:'ห้องเรียน', browseByClass:'ดูงานมอบหมายแยกตามห้องเรียน',
+    selectAClass:'🏫 เลือกห้องเรียน', selectAClassPrompt:'เลือกห้องเรียน',
+    selectClassLeft:'เลือกห้องเรียนทางซ้ายเพื่อดูงาน',
+    addAssignment:'＋ เพิ่มงาน',
+    noAssignmentsClass:'ไม่มีงานมอบหมาย', noAssignmentsClassSub:'ห้องนี้ยังไม่มีงานมอบหมาย',
+    pending:'รอทำ', toComplete:'งานที่ต้องทำ', overdueCount:'เลยกำหนด', finished:'เสร็จแล้ว',
+    progressLabel:'ความคืบหน้า', pendingAssign:'งานที่รอส่ง',
+    allDoneTitle:'เสร็จหมดแล้ว!', allDoneSub:'ไม่มีงานค้าง เก่งมาก!',
+    completedTitle:'งานที่ทำเสร็จแล้ว', total:'ทั้งหมด',
+    nothingHere:'ยังไม่มีอะไรที่นี่', nothingHereSub:'ทำงานให้เสร็จเพื่อดูที่นี่',
+    editBtn:'✏️ แก้ไข', deleteBtn:'🗑', markComplete:'ทำเครื่องหมายว่าเสร็จ', markIncomplete:'ยกเลิกการทำเครื่องหมาย',
+    daysOverdue:(n)=>`⚠️ เกิน ${n} วัน`,
+    dueToday:'🔴 ส่งวันนี้!', dueTomorrow:'🟠 ส่งพรุ่งนี้',
+    daysLeft:(n)=>`🟡 เหลือ ${n} วัน`,
+    addAssignmentTitle:'เพิ่มงานใหม่', editAssignmentTitle:'แก้ไขงาน',
+    titleField:'ชื่องาน *', titlePh:'ชื่องานมอบหมาย...',
+    description:'คำอธิบาย', descPh:'คำสั่ง รายละเอียด...',
+    subject:'วิชา', subjectFieldPh:'เช่น คณิตศาสตร์',
+    type:'ประเภท', dueDate:'วันกำหนดส่ง *', priority:'ความสำคัญ',
+    points:'คะแนน', pointsPh:'เช่น 100',
+    estTime:'เวลาที่ใช้ (นาที)', estTimePh:'เช่น 60',
+    assignToClasses:'มอบหมายให้ห้อง', cancel:'ยกเลิก', saveAssignment:'บันทึกงาน',
+    selectAll:'เลือกทั้งหมด',
+    pHigh:'สูง', pMedium:'กลาง', pLow:'ต่ำ',
+    types:['การบ้าน','งานมอบหมาย','โครงงาน','เรียงความ','รายงานทดลอง','ทดสอบย่อย','สอบ','นำเสนอ'],
+    fillRequired:'กรุณากรอกข้อมูลให้ครบ',
+    wrongCredentials:'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
+    fillAllRequired:'กรุณากรอกข้อมูลที่จำเป็นให้ครบ',
+    passwordShort:'รหัสผ่านต้องมีอย่างน้อย 4 ตัวอักษร',
+    usernameTaken:'ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว', selectClass:'กรุณาเลือกห้องเรียน',
+    accountCreated:'✅ สร้างบัญชีสำเร็จ! กรุณาเข้าสู่ระบบ',
+    fillTitleDue:'⚠️ กรุณากรอกชื่องานและวันกำหนดส่ง',
+    selectOneClass:'⚠️ กรุณาเลือกห้องเรียนอย่างน้อย 1 ห้อง',
+    assignmentUpdated:'✏️ อัปเดตงานสำเร็จ!', assignmentAdded:'✅ เพิ่มงานสำเร็จ!',
+    confirmDelete:'ลบงานนี้? นักเรียนจะไม่เห็นงานนี้อีกต่อไป',
+    assignmentDeleted:'🗑️ ลบงานแล้ว',
+    markedDone:'✅ ทำเครื่องหมายว่าเสร็จแล้ว!', markedUndone:'↩️ ยกเลิกการทำเครื่องหมาย',
+    classesN:(n)=>`${n} ห้อง`,
+    nAssignments:(n)=>`มอบหมาย ${n} งาน`,
+  }
+};
+
+function t(key,...args){const v=T[lang][key];if(typeof v==='function')return v(...args);return v!==undefined?v:(T['en'][key]||key);}
+
+function setLang(l){
+  lang=l;localStorage.setItem('bdt_lang',l);
+  document.getElementById('lang-en').classList.toggle('active',l==='en');
+  document.getElementById('lang-th').classList.toggle('active',l==='th');
+  applyAuthLang();updateNavLang();
+  if(currentUser){if(currentUser.role==='teacher')teacherTab(teacherCurrentTab,null);else renderStudentView();}
+}
+
+function applyAuthLang(){
+  sH('signin-school-badge',t('schoolBadge'));sH('signin-logo',t('trackerName'));sH('signin-subtitle',t('trackerSubtitle'));
+  sH('signin-role-teacher-label',t('teacher'));sH('signin-role-student-label',t('student'));
+  sL('signin-username-label',t('username'));sL('signin-password-label',t('password'));
+  sA('signin-username','placeholder',t('usernamePh'));sA('signin-password','placeholder',t('passwordPh'));
+  sH('signin-btn',t('signinBtn'));sH('signin-switch-text',t('noAccount'));sH('signin-switch-link',t('createOne'));
+  sH('signup-school-badge',t('schoolBadge'));sH('signup-logo',t('signupTitle'));sH('signup-subtitle',t('signupSubtitle'));
+  sH('signup-role-teacher-label',t('teacher'));sH('signup-role-student-label',t('student'));
+  sL('signup-fn-label',t('firstName'));sL('signup-ln-label',t('lastName'));
+  sA('signup-firstname','placeholder',t('firstNamePh'));sA('signup-lastname','placeholder',t('lastNamePh'));
+  sL('signup-user-label',t('username'));sA('signup-username','placeholder',t('chooseUser'));
+  sL('signup-pass-label',t('password'));sA('signup-password','placeholder',t('createPass'));
+  sL('signup-level-label',t('level'));sO('signup-level',0,t('selectLevel'));
+  sL('signup-class-label',t('classRoom'));
+  sL('signup-sid-label',t('studentId'));sA('signup-studentid','placeholder',t('studentIdPh'));
+  sL('signup-subject-label',t('subjectDept'));sA('signup-subject','placeholder',t('subjectPh'));
+  sH('signup-btn',t('createAccBtn'));sH('signup-switch-text',t('alreadyHave'));sH('signup-switch-link',t('signInLink'));
+  sL('modal-title-label',t('titleField'));sA('fa-title','placeholder',t('titlePh'));
+  sL('modal-desc-label',t('description'));sA('fa-desc','placeholder',t('descPh'));
+  sL('modal-subj-label',t('subject'));sA('fa-subject','placeholder',t('subjectFieldPh'));
+  sL('modal-type-label',t('type'));sL('modal-due-label',t('dueDate'));sL('modal-priority-label',t('priority'));
+  sL('modal-points-label',t('points'));sA('fa-points','placeholder',t('pointsPh'));
+  sL('modal-time-label',t('estTime'));sA('fa-time','placeholder',t('estTimePh'));
+  sL('modal-classes-label',t('assignToClasses'));
+  sH('modal-cancel-btn',t('cancel'));sH('modal-save-btn',t('saveAssignment'));
+  const ps=document.getElementById('fa-priority');
+  if(ps){ps.options[0].text=t('pMedium');ps.options[1].text=t('pHigh');ps.options[2].text=t('pLow');}
+  const ts=document.getElementById('fa-type');
+  if(ts){const types=t('types');Array.from(ts.options).forEach((o,i)=>{if(types[i])o.text=types[i];});}
+}
+
+function updateNavLang(){
+  sH('teacher-nav-brand',t('navBrand'));sH('student-nav-brand',t('navBrand'));
+  sH('teacher-tab-dashboard',t('dashboard'));sH('teacher-tab-assignments',t('assignments'));sH('teacher-tab-classes',t('classes'));
+  sH('student-tab-my',t('myAssignments'));sH('student-tab-done',t('completed'));
+  sH('teacher-signout-btn',t('signOut'));sH('student-signout-btn',t('signOut'));
+  const trl=document.getElementById('teacher-role-label');if(trl)trl.textContent=t('roleTeacher');
+  const srl=document.getElementById('student-role-label');if(srl)srl.textContent=t('roleStudent');
+}
+
+function sH(id,html){const el=document.getElementById(id);if(el)el.innerHTML=html;}
+function sL(id,txt){const el=document.getElementById(id);if(el)el.textContent=txt;}
+function sA(id,attr,val){const el=document.getElementById(id);if(el)el.setAttribute(attr,val);}
+function sO(id,idx,txt){const el=document.getElementById(id);if(el&&el.options[idx])el.options[idx].text=txt;}
+
+// ================================================================
+// AUTH
+// ================================================================
+
+function setSigninRole(r) {
+  signinRole = r;
+  document.getElementById('signin-role-teacher').classList.toggle('active', r==='teacher');
+  document.getElementById('signin-role-student').classList.toggle('active', r==='student');
+}
+function setSignupRole(r) {
+  signupRole = r;
+  document.getElementById('signup-role-teacher').classList.toggle('active', r==='teacher');
+  document.getElementById('signup-role-student').classList.toggle('active', r==='student');
+  document.getElementById('signup-class-section').style.display   = r==='student' ? '' : 'none';
+  document.getElementById('signup-teacher-section').style.display = r==='teacher' ? '' : 'none';
+}
+function gotoSignup() { show('screen-signup'); clearAuthErrors(); }
+function gotoSignin() { show('screen-signin'); clearAuthErrors(); }
+function clearAuthErrors() {
+  ['signin-error','signup-error'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('show'); el.textContent='';
+  });
+}
+
+function populateSignupClass() {
+  const level = document.getElementById('signup-level').value;
+  const sel = document.getElementById('signup-class');
+  if (!level) { sel.innerHTML = '<option value="">Select level first</option>'; return; }
+  sel.innerHTML = SCHOOL[level].map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+function doSignIn() {
+  const u = document.getElementById('signin-username').value.trim();
+  const p = document.getElementById('signin-password').value;
+  const errEl = document.getElementById('signin-error');
+  errEl.classList.remove('show');
+  if (!u||!p) { errEl.textContent=t('fillRequired'); errEl.classList.add('show'); return; }
+  const user = DB.users.find(x => x.username===u && x.password===p && x.role===signinRole);
+  if (!user) { errEl.textContent=t('wrongCredentials'); errEl.classList.add('show'); return; }
+  DB.session = user;
+  currentUser = user;
+  launchApp();
+}
+
+function doSignUp() {
+  const fn = document.getElementById('signup-firstname').value.trim();
+  const ln = document.getElementById('signup-lastname').value.trim();
+  const u  = document.getElementById('signup-username').value.trim();
+  const p  = document.getElementById('signup-password').value;
+  const errEl = document.getElementById('signup-error');
+  errEl.classList.remove('show');
+  if (!fn||!ln||!u||!p) { errEl.textContent=t('fillAllRequired'); errEl.classList.add('show'); return; }
+  if (p.length < 4)      { errEl.textContent=t('passwordShort'); errEl.classList.add('show'); return; }
+  const users = DB.users;
+  if (users.find(x => x.username===u)) { errEl.textContent=t('usernameTaken'); errEl.classList.add('show'); return; }
+
+  const user = { id: Date.now().toString(), username:u, password:p, role:signupRole,
+                 firstName:fn, lastName:ln, displayName:`${fn} ${ln}` };
+
+  if (signupRole === 'student') {
+    const level = document.getElementById('signup-level').value;
+    const cls   = document.getElementById('signup-class').value;
+    const sid   = document.getElementById('signup-studentid').value.trim();
+    if (!level||!cls) { errEl.textContent=t('selectClass'); errEl.classList.add('show'); return; }
+    user.level = level; user.class = cls; user.studentId = sid;
+  } else {
+    user.subject = document.getElementById('signup-subject').value.trim();
+  }
+
+  users.push(user); DB.users = users;
+  toast(t('accountCreated'));
+  gotoSignin();
+}
+
+function signOut() {
+  DB.session = null; currentUser = null;
+  showOnly('screen-signin');
+}
+
+// ================================================================
+// APP LAUNCH
+// ================================================================
+function launchApp() {
+  if (currentUser.role === 'teacher') {
+    document.getElementById('teacher-name-nav').textContent = currentUser.displayName;
+    document.getElementById('teacher-avatar-nav').textContent = currentUser.firstName[0].toUpperCase();
+    showOnly('screen-teacher');
+    teacherTab('dashboard', document.querySelector('#screen-teacher .nav-tab'));
+  } else {
+    document.getElementById('student-name-nav').textContent  = currentUser.displayName;
+    document.getElementById('student-avatar-nav').textContent = currentUser.firstName[0].toUpperCase();
+    document.getElementById('student-class-nav').textContent = currentUser.class || '';
+    showOnly('screen-student');
+    studentTab('my', document.querySelector('#screen-student .nav-tab'));
+  }
+}
+
+// ================================================================
+// SCREEN HELPERS
+// ================================================================
+function show(id) {
+  document.querySelectorAll('.auth-screen,.app-screen').forEach(s=>{
+    s.classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+}
+function showOnly(id) { show(id); }
+
+// ================================================================
+// TEACHER — TAB ROUTING
+// ================================================================
+function teacherTab(tab, el) {
+  teacherCurrentTab = tab;
+  document.querySelectorAll('#screen-teacher .nav-tab').forEach(t=>t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const c = document.getElementById('teacher-content');
+  if (tab==='dashboard')   renderTeacherDashboard(c);
+  else if (tab==='assignments') renderTeacherAssignments(c);
+  else if (tab==='classes') renderTeacherClasses(c);
+}
+
+// ── TEACHER DASHBOARD ─────────────────────────────────────────
+function renderTeacherDashboard(c) {
+  const all = DB.assignments;
+  const now = new Date();
+  const weekEnd = new Date(); weekEnd.setDate(weekEnd.getDate()+7);
+  const total = all.length;
+  const active = all.filter(a=> new Date(a.due) >= now).length;
+  const overdue = all.filter(a=> new Date(a.due) < now).length;
+  const classesUsed = new Set(all.flatMap(a=>a.classes||[])).size;
+
+  c.innerHTML = `
+    <div style="margin-bottom:20px">
+      <div style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:4px">
+        ${t('welcomeBack')}, ${currentUser.firstName}! 👋
+      </div>
+      <div style="font-size:13px;color:var(--text-muted)">
+        ${currentUser.subject ? `${t('subjectLabel')}: ${currentUser.subject} · ` : ''}
+        ${t('overviewLabel')}
+      </div>
+    </div>
+
+    <div class="stats-strip">
+      <div class="stat-box">
+        <div class="stat-lbl">${t('totalAssign')}</div>
+        <div class="stat-val sv-accent">${total}</div>
+        <div class="stat-sub">${t('createdByYou')}</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-lbl">${t('activeDueSoon')}</div>
+        <div class="stat-val sv-yellow">${active}</div>
+        <div class="stat-sub">${t('upcomingDeadlines')}</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-lbl">${t('overdue')}</div>
+        <div class="stat-val sv-red">${overdue}</div>
+        <div class="stat-sub">${t('pastDueDate')}</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-lbl">${t('classesAssigned')}</div>
+        <div class="stat-val sv-green">${classesUsed}</div>
+        <div class="stat-sub">${t('acrossAll')}</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">📅 Recently Added</div>
+          <button class="btn btn-ghost btn-sm" onclick="teacherTab('assignments', document.querySelectorAll('#screen-teacher .nav-tab')[1])">${t('viewAll')}</button>
+        </div>
+        <div style="padding:0">
+          ${all.length === 0
+            ? `<div class="empty-state"><div class="ei">📭</div><h3>No assignments yet</h3><p>Create your first assignment.</p></div>`
+            : all.slice().sort((a,b)=>b.created-a.created).slice(0,5).map(a => `
+              <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer" onclick="teacherTab('assignments', document.querySelectorAll('#screen-teacher .nav-tab')[1])">
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.title}</div>
+                  <div style="font-size:11px;color:var(--text-muted)">${a.subject||t('noSubject')} · Due ${formatDate(a.due)}</div>
+                </div>
+                <span class="tag tag-due">${(a.classes||[]).length} class${(a.classes||[]).length!==1?'es':''}</span>
+              </div>`).join('')
+          }
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🏫 Assignment by Level</div>
+        </div>
+        <div style="padding:16px 20px">
+          ${LEVELS.map(level => {
+            const count = all.filter(a=>(a.classes||[]).some(c=>c.startsWith(level+'/'))).length;
+            const pct = total>0 ? Math.round(count/total*100) : 0;
+            return `<div style="margin-bottom:14px">
+              <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:5px">
+                <span>${level}</span><span style="color:var(--text-muted)">${count} assignments</span>
+              </div>
+              <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ── TEACHER ASSIGNMENTS ────────────────────────────────────────
+function renderTeacherAssignments(c) {
+  const all = DB.assignments;
+  c.innerHTML = `
+    <div class="assignments-header">
+      <div class="assignments-title">All Assignments</div>
+      <button class="btn btn-primary" onclick="openAddAssignment()">＋ New Assignment</button>
+    </div>
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="t-search" placeholder="" + t('searchPh') + " oninput="renderTeacherAssignmentsList()">
+      </div>
+      <select class="form-select" id="t-filter-level" onchange="renderTeacherAssignmentsList()" style="width:auto;padding:8px 12px">
+        <option value="">All Levels</option>
+        ${LEVELS.map(l=>`<option>${l}</option>`).join('')}
+      </select>
+    </div>
+    <div id="t-a-list"></div>
+  `;
+  renderTeacherAssignmentsList();
+}
+
+function renderTeacherAssignmentsList() {
+  const search = (document.getElementById('t-search')?.value||'').toLowerCase();
+  const level  = document.getElementById('t-filter-level')?.value||'';
+  let list = DB.assignments;
+  if (search) list = list.filter(a=>a.title.toLowerCase().includes(search)||(a.subject||'').toLowerCase().includes(search));
+  if (level)  list = list.filter(a=>(a.classes||[]).some(c=>c.startsWith(level+'/')));
+  list = list.slice().sort((a,b)=>new Date(a.due)-new Date(b.due));
+
+  const el = document.getElementById('t-a-list');
+  if (!el) return;
+  if (!list.length) {
+    el.innerHTML = `<div class="empty-state"><div class="ei">📭</div><h3>No assignments found</h3><p>Create one with the button above.</p></div>`;
+    return;
+  }
+  el.innerHTML = `<div class="a-list">${list.map(a => buildAssignmentCard(a, 'teacher')).join('')}</div>`;
+}
+
+// ── TEACHER CLASSES ────────────────────────────────────────────
+function renderTeacherClasses(c) {
+  c.innerHTML = `
+    <div style="margin-bottom:20px">
+      <div style="font-family:'Playfair Display',serif;font-size:24px;margin-bottom:4px">Classes</div>
+      <div style="font-size:13px;color:var(--text-muted)">Browse assignments by class</div>
+    </div>
+    <div class="teacher-layout">
+      <div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">🏫 Select a Class</div></div>
+          <div style="padding:14px 16px">
+            ${LEVELS.map(level => `
+              <div class="section-hd">${level} <span style="color:var(--text-dim);font-size:10px">${SCHOOL[level].length} classes</span></div>
+              <div class="classes-grid" style="margin-bottom:12px">
+                ${SCHOOL[level].map(cls => {
+                  const cnt = DB.assignments.filter(a=>(a.classes||[]).includes(cls)).length;
+                  return `<div class="class-chip ${cnt>0?'has-assignments':''} ${teacherSelectedClass===cls?'active':''}" 
+                    onclick="selectTeacherClass('${cls}')">${cls}${cnt>0?` <span style='font-size:10px;color:var(--text-muted)'>(${cnt})</span>`:''}</div>`;
+                }).join('')}
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div id="teacher-class-detail">
+        <div class="empty-state" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:60px 20px">
+          <div class="ei">🏫</div><h3>Select a Class</h3><p>Choose a class on the left to view its assignments.</p>
+        </div>
+      </div>
+    </div>
+  `;
+  if (teacherSelectedClass) selectTeacherClass(teacherSelectedClass);
+}
+
+function selectTeacherClass(cls) {
+  teacherSelectedClass = cls;
+  const assignments = DB.assignments.filter(a=>(a.classes||[]).includes(cls));
+  const panel = document.getElementById('teacher-class-detail');
+  if (!panel) return;
+
+  // refresh chips
+  document.querySelectorAll('.class-chip').forEach(el => {
+    el.classList.toggle('active', el.textContent.startsWith(cls));
+  });
+
+  panel.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px">Class ${cls}</div>
+        <div style="font-size:12px;color:var(--text-muted)">${t('nAssignments',assignments.length)}</div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openAddAssignment('${cls}')">＋ Add Assignment</button>
+    </div>
+    ${assignments.length===0
+      ? `<div class="empty-state" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r)"><div class="ei">📭</div><h3>No assignments</h3><p>This class has no assignments yet.</p></div>`
+      : `<div class="a-list">${assignments.sort((a,b)=>new Date(a.due)-new Date(b.due)).map(a=>buildAssignmentCard(a,'teacher')).join('')}</div>`
+    }
+  `;
+}
+
+// ================================================================
+// STUDENT — TAB ROUTING
+// ================================================================
+function studentTab(tab, el) {
+  studentCurrentTab = tab;
+  document.querySelectorAll('#screen-student .nav-tab').forEach(t=>t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderStudentView();
+}
+
+function renderStudentView() {
+  const c = document.getElementById('student-content');
+  const cls = currentUser.class;
+  const assignments = DB.assignments.filter(a=>(a.classes||[]).includes(cls));
+  const completions = DB.completions;
+  const myDone = completions[currentUser.id] || {};
+
+  const pending  = assignments.filter(a=>!myDone[a.id]);
+  const done     = assignments.filter(a=> myDone[a.id]);
+  const overdue  = pending.filter(a=>new Date(a.due)<new Date());
+
+  if (studentCurrentTab === 'my') {
+    const filtered = pending.sort((a,b)=>new Date(a.due)-new Date(b.due));
+    c.innerHTML = `
+      <div class="stats-strip" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-box">
+          <div class="stat-lbl">Pending</div>
+          <div class="stat-val sv-yellow">${pending.length}</div>
+          <div class="stat-sub">to complete</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-lbl">Overdue</div>
+          <div class="stat-val sv-red">${overdue.length}</div>
+          <div class="stat-sub">${t('pastDueDate')}</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-lbl">Completed</div>
+          <div class="stat-val sv-green">${done.length}</div>
+          <div class="stat-sub">finished</div>
+        </div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px">
+          <span>Class ${cls} — Progress</span>
+          <span style="color:var(--text-muted)">${assignments.length>0?Math.round(done.length/assignments.length*100):0}%</span>
+        </div>
+        <div class="prog-bar" style="height:10px">
+          <div class="prog-fill green" style="width:${assignments.length>0?Math.round(done.length/assignments.length*100):0}%"></div>
+        </div>
+      </div>
+      <div class="assignments-header">
+        <div class="assignments-title">Pending Assignments <span>Class ${cls}</span></div>
+      </div>
+      ${filtered.length===0
+        ? `<div class="empty-state" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r)">
+            <div class="ei">🎉</div><h3>All done!</h3><p>No pending assignments. Great work!</p></div>`
+        : `<div class="a-list">${filtered.map(a=>buildAssignmentCard(a,'student')).join('')}</div>`
+      }
+    `;
+  } else {
+    const filtered = done.sort((a,b)=>new Date(b.due)-new Date(a.due));
+    c.innerHTML = `
+      <div class="assignments-header">
+        <div class="assignments-title">Completed Assignments <span>${done.length} total</span></div>
+      </div>
+      ${filtered.length===0
+        ? `<div class="empty-state" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r)">
+            <div class="ei">📝</div><h3>Nothing here yet</h3><p>Complete assignments to see them here.</p></div>`
+        : `<div class="a-list">${filtered.map(a=>buildAssignmentCard(a,'student',true)).join('')}</div>`
+      }
+    `;
+  }
+}
+
+// ================================================================
+// ASSIGNMENT CARD BUILDER
+// ================================================================
+function buildAssignmentCard(a, role, forceDone=false) {
+  const completions = DB.completions;
+  const myDone = completions[currentUser?.id]||{};
+  const isDone = forceDone || myDone[a.id];
+  const diff = Math.ceil((new Date(a.due)-new Date())/86400000);
+  let dueTag = '';
+  if (diff < 0)       dueTag = `<span class="tag tag-overdue">⚠️ ${Math.abs(diff)}d overdue</span>`;
+  else if (diff===0)  dueTag = `<span class="tag tag-urgent">🔴 Due today!</span>`;
+  else if (diff===1)  dueTag = `<span class="tag tag-urgent">🟠 Due tomorrow</span>`;
+  else if (diff<=3)   dueTag = `<span class="tag tag-due">🟡 ${diff} days left</span>`;
+  else                dueTag = `<span class="tag tag-due">📅 ${formatDate(a.due)}</span>`;
+
+  const classTags = (a.classes||[]).slice(0,4).map(c=>`<span class="tag" style="background:rgba(58,143,232,.1);color:var(--text-muted)">${c}</span>`).join('') +
+    ((a.classes||[]).length>4 ? `<span class="tag" style="background:var(--surface2);color:var(--text-dim)">+${(a.classes||[]).length-4}</span>` : '');
+
+  const checkHtml = role==='teacher'
+    ? `<div class="a-check readonly" style="opacity:.3">✓</div>`
+    : `<div class="a-check ${isDone?'checked':''}" onclick="toggleStudentDone('${a.id}')" title="${isDone?'Mark incomplete':'Mark complete'}">${isDone?'✓':''}</div>`;
+
+  const actionsHtml = role==='teacher'
+    ? `<div class="a-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-ghost btn-sm" onclick="openEditAssignment('${a.id}')">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAssignment('${a.id}')">🗑</button>
+       </div>`
+    : '';
+
+  return `<div class="a-card p-${a.priority||'medium'} ${isDone?'is-done':''}">
+    ${checkHtml}
+    <div class="a-body">
+      <div class="a-title">${a.title}</div>
+      ${a.desc?`<div class="a-desc">${a.desc.substring(0,120)}${a.desc.length>120?'…':''}</div>`:''}
+      <div class="a-tags">
+        ${a.subject?`<span class="tag tag-subject">📚 ${a.subject}</span>`:''}
+        <span class="tag tag-type">📄 ${a.type||'Homework'}</span>
+        ${dueTag}
+        ${a.points?`<span class="tag tag-points">⭐ ${a.points}pts</span>`:''}
+        ${a.estimatedTime?`<span class="tag" style="background:var(--surface2);color:var(--text-muted)">⏱ ~${a.estimatedTime}min</span>`:''}
+        ${isDone?`<span class="tag tag-done">✅ Done</span>`:''}
+        ${role==='teacher'?classTags:''}
+      </div>
+    </div>
+    <div class="a-right">
+      <span class="priority-badge pb-${a.priority||'medium'}">${a.priority||'medium'}</span>
+      ${actionsHtml}
+    </div>
+  </div>`;
+}
+
+// ================================================================
+// STUDENT — TOGGLE DONE
+// ================================================================
+function toggleStudentDone(id) {
+  const completions = DB.completions;
+  if (!completions[currentUser.id]) completions[currentUser.id] = {};
+  const wasDone = completions[currentUser.id][id];
+  if (wasDone) delete completions[currentUser.id][id];
+  else completions[currentUser.id][id] = true;
+  DB.completions = completions;
+  toast(wasDone ? t('markedUndone') : t('markedDone'));
+  renderStudentView();
+}
+
+// ================================================================
+// TEACHER — ADD/EDIT ASSIGNMENT MODAL
+// ================================================================
+function openAddAssignment(preClass=null) {
+  editingAssignmentId = null;
+  document.getElementById('modal-a-title').textContent = t('addAssignmentTitle');
+  document.getElementById('fa-title').value  = '';
+  document.getElementById('fa-desc').value   = '';
+  document.getElementById('fa-subject').value= currentUser.subject||'';
+  document.getElementById('fa-type').value   = 'Homework';
+  document.getElementById('fa-priority').value='medium';
+  document.getElementById('fa-points').value = '';
+  document.getElementById('fa-time').value   = '';
+  document.getElementById('fa-due').value    = new Date().toISOString().split('T')[0];
+  buildClassPicker(preClass ? [preClass] : []);
+  document.getElementById('modal-assignment').classList.add('open');
+}
+
+function openEditAssignment(id) {
+  const a = DB.assignments.find(x=>x.id===id); if (!a) return;
+  editingAssignmentId = id;
+  document.getElementById('modal-a-title').textContent = t('editAssignmentTitle');
+  document.getElementById('fa-title').value   = a.title;
+  document.getElementById('fa-desc').value    = a.desc||'';
+  document.getElementById('fa-subject').value = a.subject||'';
+  document.getElementById('fa-type').value    = a.type||'Homework';
+  document.getElementById('fa-priority').value= a.priority||'medium';
+  document.getElementById('fa-points').value  = a.points||'';
+  document.getElementById('fa-time').value    = a.estimatedTime||'';
+  document.getElementById('fa-due').value     = a.due;
+  buildClassPicker(a.classes||[]);
+  document.getElementById('modal-assignment').classList.add('open');
+}
+
+function buildClassPicker(selected=[]) {
+  const container = document.getElementById('modal-class-picker');
+  container.innerHTML = LEVELS.map(level => `
+    <div style="width:100%;margin-bottom:8px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:5px;display:flex;align-items:center;gap:8px">
+        ${level}
+        <button type="button" onclick="toggleLevelInPicker('${level}')" style="font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);cursor:pointer">Select all</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">
+        ${SCHOOL[level].map(cls => `
+          <div class="class-chip picker-chip ${selected.includes(cls)?'active':''}" 
+               style="padding:5px 10px;font-size:11px" 
+               data-class="${cls}" onclick="togglePickerChip(this)">${cls}</div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function togglePickerChip(el) { el.classList.toggle('active'); }
+function toggleLevelInPicker(level) {
+  const chips = document.querySelectorAll(`#modal-class-picker .picker-chip[data-class^="${level}/"]`);
+  const allActive = Array.from(chips).every(c=>c.classList.contains('active'));
+  chips.forEach(c => { if (allActive) c.classList.remove('active'); else c.classList.add('active'); });
+}
+
+function getSelectedClasses() {
+  return Array.from(document.querySelectorAll('#modal-class-picker .picker-chip.active')).map(c=>c.dataset.class);
+}
+
+function closeAssignmentModal() { document.getElementById('modal-assignment').classList.remove('open'); }
+
+function saveAssignment() {
+  const title   = document.getElementById('fa-title').value.trim();
+  const due     = document.getElementById('fa-due').value;
+  const classes = getSelectedClasses();
+  if (!title||!due) { toast(t('fillTitleDue')); return; }
+  if (!classes.length) { toast(t('selectOneClass')); return; }
+
+  const item = {
+    id: editingAssignmentId || Date.now().toString(),
+    title,
+    desc:          document.getElementById('fa-desc').value.trim(),
+    subject:       document.getElementById('fa-subject').value.trim(),
+    type:          document.getElementById('fa-type').value,
+    due,
+    priority:      document.getElementById('fa-priority').value,
+    points:        parseInt(document.getElementById('fa-points').value)||0,
+    estimatedTime: parseInt(document.getElementById('fa-time').value)||0,
+    classes,
+    createdBy:     currentUser.id,
+    created:       editingAssignmentId
+                     ? (DB.assignments.find(a=>a.id===editingAssignmentId)?.created||Date.now())
+                     : Date.now(),
+  };
+
+  let all = DB.assignments;
+  if (editingAssignmentId) all = all.map(a=>a.id===editingAssignmentId?item:a);
+  else all.unshift(item);
+  DB.assignments = all;
+  closeAssignmentModal();
+  toast(editingAssignmentId ? t('assignmentUpdated') : t('assignmentAdded'));
+  // Re-render current tab
+  if (teacherCurrentTab==='assignments') renderTeacherAssignments(document.getElementById('teacher-content'));
+  else if (teacherCurrentTab==='classes') renderTeacherClasses(document.getElementById('teacher-content'));
+  else renderTeacherDashboard(document.getElementById('teacher-content'));
+}
+
+function deleteAssignment(id) {
+  if (!confirm(t('confirmDelete'))) return;
+  DB.assignments = DB.assignments.filter(a=>a.id!==id);
+  toast(t('assignmentDeleted'));
+  if (teacherCurrentTab==='assignments') renderTeacherAssignments(document.getElementById('teacher-content'));
+  else if (teacherCurrentTab==='classes') renderTeacherClasses(document.getElementById('teacher-content'));
+  else renderTeacherDashboard(document.getElementById('teacher-content'));
+}
+
+// ================================================================
+// UTILITIES
+// ================================================================
+function formatDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast'; el.textContent = msg;
+  document.getElementById('toast-wrap').appendChild(el);
+  setTimeout(()=>el.remove(), 3000);
+}
+
+// Close modal on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('open'); });
+});
+
+// Enter key on sign in
+document.getElementById('signin-password').addEventListener('keydown', e=>{ if(e.key==='Enter') doSignIn(); });
+document.getElementById('signin-username').addEventListener('keydown', e=>{ if(e.key==='Enter') doSignIn(); });
+
+// ================================================================
+// AUTO LOGIN (resume session)
+// ================================================================
+(function init() {
+  const sess = DB.session;
+  if (sess) {
+    // Validate session user still exists
+    const user = DB.users.find(u=>u.id===sess.id);
+    if (user) { currentUser = user; DB.session = user; launchApp(); return; }
+  }
+  showOnly('screen-signin');
+  applyAuthLang();
+  updateNavLang();
+})();
+</script>
+</body>
+</html>
